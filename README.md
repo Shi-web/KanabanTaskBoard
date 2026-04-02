@@ -103,60 +103,6 @@ React + Vite + TypeScript + Tailwind CSS + Supabase. Guest users sign in anonymo
    npm run preview
    ```
 
-## Supabase Tables
-
-Run the following SQL in **Supabase → SQL Editor** to create the team and assignee tables:
-
-```sql
--- Team members
-create table team_members (
-  id uuid primary key default gen_random_uuid(),
-  user_id uuid not null default auth.uid(),
-  name text not null,
-  color text not null default '#6366f1',
-  created_at timestamptz not null default now()
-);
-
-alter table team_members enable row level security;
-create policy "Users manage own members"
-  on team_members for all
-  using (user_id = auth.uid())
-  with check (user_id = auth.uid());
-
--- Task assignees (many-to-many join table)
-create table task_assignees (
-  id uuid primary key default gen_random_uuid(),
-  task_id uuid not null references tasks(id) on delete cascade,
-  member_id uuid not null references team_members(id) on delete cascade,
-  user_id uuid not null default auth.uid(),
-  created_at timestamptz not null default now(),
-  unique(task_id, member_id)
-);
-
-alter table task_assignees enable row level security;
-create policy "Users manage own assignees"
-  on task_assignees for all
-  using (user_id = auth.uid())
-  with check (user_id = auth.uid());
-
--- Task activity log (task_id is nullable so deletion entries survive cascade)
-create table task_activity (
-  id uuid primary key default gen_random_uuid(),
-  task_id uuid references tasks(id) on delete cascade,
-  user_id uuid not null default auth.uid(),
-  kind text not null,
-  payload jsonb not null default '{}',
-  created_at timestamptz not null default now()
-);
-
-alter table task_activity enable row level security;
-create policy "Users manage own activity"
-  on task_activity for all
-  using (user_id = auth.uid())
-  with check (user_id = auth.uid());
-
-create index task_activity_task_time on task_activity (task_id, created_at desc);
-```
 
 ## Deploy (e.g. Vercel)
 
