@@ -146,6 +146,7 @@ type Props = {
 export function ActivityPanel({ open, onClose, activityState, onReload, tasks, members }: Props) {
   const taskMap = new Map(tasks.map((t) => [t.id, t.title]))
   const memberMap = new Map(members.map((m) => [m.id, m.name]))
+  const activities = activityState.status === 'ready' ? activityState.activities : []
 
   if (!open) return null
 
@@ -218,7 +219,7 @@ export function ActivityPanel({ open, onClose, activityState, onReload, tasks, m
                 Retry
               </button>
             </div>
-          ) : activityState.activities.length === 0 ? (
+          ) : activities.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
               <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[var(--color-surface-muted)]">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--color-text-tertiary)]" aria-hidden>
@@ -237,7 +238,7 @@ export function ActivityPanel({ open, onClose, activityState, onReload, tasks, m
             <div className="relative px-6 py-4">
               <div className="absolute left-[31px] top-4 bottom-4 w-px bg-[var(--color-border)]" aria-hidden />
               <ul role="list" className="relative space-y-1">
-                {activityState.activities.map((a) => {
+                {activities.map((a) => {
                   const colors = KIND_COLORS[a.kind] ?? KIND_COLORS.created
                   const icon = KIND_ICONS[a.kind] ?? KIND_ICONS.created
                   const payloadTitle = (a.payload as Record<string, unknown>).task_title as string | undefined

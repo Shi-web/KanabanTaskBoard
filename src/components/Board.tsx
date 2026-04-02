@@ -17,7 +17,7 @@ import { logActivity, detachTaskActivities, useAllTaskActivity } from '../hooks/
 import { Column, type ColumnConfig } from './Column'
 import { TaskCardBody } from './TaskCard'
 import { TaskDialog } from './TaskDialog'
-import { TeamPanel, MemberAvatar } from './TeamPanel'
+import { TeamPanel } from './TeamPanel'
 import { ActivityPanel } from './ActivityPanel'
 
 const COLUMNS: ColumnConfig[] = [
